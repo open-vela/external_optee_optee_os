@@ -156,6 +156,10 @@ static TEE_Result set_rmem_param(const struct optee_msg_param_rmem *rmem,
 	mem->offs = READ_ONCE(rmem->offs);
 	mem->size = sz;
 
+#ifdef __NuttX__
+	mem->mobj->size = sz;
+#endif
+
 	/*
 	 * Check that the supplied offset and size is covered by the
 	 * previously verified MOBJ.
