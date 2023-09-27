@@ -41,6 +41,7 @@ static void s_ctr_increment_counter(symmetric_CTR *ctr)
 static int s_ctr_encrypt(const unsigned char *pt, unsigned char *ct, unsigned long len, symmetric_CTR *ctr)
 {
    int err;
+   int x;
 
    while (len) {
       /* is the pad empty? */
