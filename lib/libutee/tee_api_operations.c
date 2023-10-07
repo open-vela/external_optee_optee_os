@@ -2400,19 +2400,6 @@ void __GP11_TEE_GenerateRandom(void *randomBuffer, uint32_t randomBufferLen)
 	TEE_GenerateRandom(randomBuffer, randomBufferLen);
 }
 
-int rand(void)
-{
-	int rc;
-
-	TEE_GenerateRandom(&rc, sizeof(rc));
-
-	/*
-	 * RAND_MAX is the larges int, INT_MAX which is all bits but the
-	 * highest bit set.
-	 */
-	return rc & RAND_MAX;
-}
-
 TEE_Result TEE_IsAlgorithmSupported(uint32_t alg, uint32_t element)
 {
 	if (IS_ENABLED(CFG_CRYPTO_AES)) {
