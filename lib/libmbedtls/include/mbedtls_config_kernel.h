@@ -9,7 +9,9 @@
 #ifdef ARM64
 #define MBEDTLS_HAVE_INT64
 #endif
+#ifndef MBEDTLS_BIGNUM_C
 #define MBEDTLS_BIGNUM_C
+#endif
 #define MBEDTLS_GENPRIME
 
 /* Test if Mbedtls is the primary crypto lib */
