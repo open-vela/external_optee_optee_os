@@ -227,7 +227,7 @@ static int uuid2str(char *dst, size_t size, void *ptr)
 	} *uuid = ptr;
 
 	return snprintk(dst, size,
-			"%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+			"%" PRIx32"-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
 			uuid->lo, uuid->mid, uuid->hi_ver,
 			uuid->seq_n[0], uuid->seq_n[1],
 			uuid->seq_n[2],	uuid->seq_n[3],
