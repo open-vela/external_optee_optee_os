@@ -24,10 +24,16 @@
 #ifndef __noreturn
 #define __noreturn	__attribute__((__noreturn__))
 #endif
+#ifndef __pure
 #define __pure		__attribute__((pure))
+#endif
+#ifndef __aligned
 #define __aligned(x)	__attribute__((aligned(x)))
+#endif
 #define __printf(a, b)	__attribute__((format(printf, a, b)))
+#ifndef __noinline
 #define __noinline	__attribute__((noinline))
+#endif
 #define __attr_const	__attribute__((__const__))
 #ifndef __unused
 #define __unused	__attribute__((unused))
@@ -38,7 +44,9 @@
 #endif
 #define __must_check	__attribute__((warn_unused_result))
 #define __cold		__attribute__((__cold__))
+#ifndef __section
 #define __section(x)	__attribute__((section(x)))
+#endif
 #define __data		__section(".data")
 #define __bss		__section(".bss")
 #ifdef __clang__
