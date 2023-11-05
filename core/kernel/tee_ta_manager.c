@@ -526,7 +526,7 @@ TEE_Result tee_ta_close_session(struct tee_ta_session *csess,
 	struct ts_ctx *ts_ctx = NULL;
 	bool keep_alive = false;
 
-	DMSG("csess 0x%" PRIxVA " id %u",
+	DMSG("csess 0x%" PRIxVA " id %" PRIu32,
 	     (vaddr_t)csess, csess ? csess->id : UINT_MAX);
 
 	if (!csess)
@@ -732,7 +732,7 @@ TEE_Result tee_ta_open_session(TEE_ErrorOrigin *err,
 
 	res = tee_ta_init_session(err, open_sessions, uuid, &s);
 	if (res != TEE_SUCCESS) {
-		DMSG("init session failed 0x%x", res);
+		DMSG("init session failed 0x%" PRIx32, res);
 		return res;
 	}
 
@@ -782,7 +782,7 @@ TEE_Result tee_ta_open_session(TEE_ErrorOrigin *err,
 		tee_ta_close_session(s, open_sessions, KERN_IDENTITY);
 
 	if (res != TEE_SUCCESS)
-		EMSG("Failed. Return error 0x%x", res);
+		EMSG("Failed. Return error 0x%" PRIx32, res);
 
 	return res;
 }
@@ -837,7 +837,7 @@ TEE_Result tee_ta_invoke_command(TEE_ErrorOrigin *err,
 
 	/* Short buffer is not an effective error case */
 	if (res != TEE_SUCCESS && res != TEE_ERROR_SHORT_BUFFER)
-		DMSG("Error: %x of %d", res, *err);
+		DMSG("Error: %" PRIx32 " of %" PRId32, res, *err);
 
 	return res;
 }
