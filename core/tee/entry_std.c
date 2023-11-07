@@ -584,7 +584,7 @@ TEE_Result __tee_entry_std(struct optee_msg_arg *arg, uint32_t num_params)
 
 	default:
 err:
-		EMSG("Unknown cmd 0x%x", arg->cmd);
+		EMSG("Unknown cmd 0x%" PRIx32, arg->cmd);
 		res = TEE_ERROR_NOT_IMPLEMENTED;
 	}
 
