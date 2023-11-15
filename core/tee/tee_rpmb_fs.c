@@ -826,8 +826,9 @@ static TEE_Result tee_rpmb_resp_unpack_verify(struct rpmb_data_frame *datafrm,
 		if (msg_type == RPMB_MSG_TYPE_RESP_AUTH_DATA_WRITE) {
 			/* Verify the write counter is incremented by 1 */
 			if (*rawdata->write_counter != wr_cnt + 1) {
-				DMSG("Counter mismatched (0x%04x/0x%04x)",
-				     *rawdata->write_counter, wr_cnt + 1);
+				DMSG("Counter mismatched (0x%04"PRIx32"/0x%04"PRIx32")",
+				     *rawdata->write_counter,
+				     wr_cnt + 1);
 				return TEE_ERROR_SECURITY;
 			}
 			rpmb_ctx->wr_cnt++;
@@ -1010,7 +1011,7 @@ static TEE_Result tee_rpmb_verify_key_sync_counter(uint16_t dev_id)
 		rpmb_ctx->key_verified = true;
 		rpmb_ctx->wr_cnt_synced = true;
 	} else
-		EMSG("Verify key returning 0x%x", res);
+		EMSG("Verify key returning 0x%"PRIx32, res);
 	return res;
 }
 
@@ -1152,7 +1153,7 @@ static TEE_Result tee_rpmb_init(uint16_t dev_id)
 		res = tee_rpmb_key_gen(dev_id, rpmb_ctx->key,
 				       RPMB_KEY_MAC_SIZE);
 		if (res != TEE_SUCCESS) {
-			EMSG("RPMB INIT: Deriving key failed with error 0x%x",
+			EMSG("RPMB INIT: Deriving key failed with error 0x%"PRIx32,
 				res);
 			goto func_exit;
 		}
@@ -1911,9 +1912,9 @@ static void dump_fat(void)
 static void dump_fh(struct rpmb_file_handle *fh)
 {
 	DMSG("fh->filename=%s", fh->filename);
-	DMSG("fh->rpmb_fat_address=%u", fh->rpmb_fat_address);
-	DMSG("fh->fat_entry.start_address=%u", fh->fat_entry.start_address);
-	DMSG("fh->fat_entry.data_size=%u", fh->fat_entry.data_size);
+	DMSG("fh->rpmb_fat_address=%"PRIu32, fh->rpmb_fat_address);
+	DMSG("fh->fat_entry.start_address=%"PRIu32, fh->fat_entry.start_address);
+	DMSG("fh->fat_entry.data_size=%"PRIu32, fh->fat_entry.data_size);
 }
 #else
 static void dump_fh(struct rpmb_file_handle *fh __unused)
@@ -2178,7 +2179,7 @@ static TEE_Result read_fat(struct rpmb_file_handle *fh, tee_mm_pool_t *p)
 	bool expand_fat = false;
 	struct rpmb_file_handle last_fh;
 
-	DMSG("fat_address %d", fh->rpmb_fat_address);
+	DMSG("fat_address %"PRId32, fh->rpmb_fat_address);
 
 	res = fat_entry_dir_init();
 	if (res)
