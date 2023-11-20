@@ -50,9 +50,9 @@ void crypto_aes_enc_block(const void *enc_key, size_t enc_keylen __maybe_unused,
 	if (enc_keylen > sizeof(ctx.buf))
 		panic();
 	memcpy(ctx.buf, enc_key, enc_keylen);
-	ctx.rk = ctx.buf;
+	ctx.rk_offset = 0;
 	ctx.nr = rounds;
-	mbedtls_aes_encrypt(&ctx, src, dst);
+	mbedtls_aes_crypt_ecb(&ctx, MBEDTLS_AES_ENCRYPT, src, dst);
 	mbedtls_aes_free(&ctx);
 #endif
 }
