@@ -6,6 +6,7 @@
 
 #include <assert.h>
 #include <compiler.h>
+#include <md_wrap.h>
 #include <crypto/crypto.h>
 #include <crypto/crypto_impl.h>
 #include <kernel/panic.h>
@@ -92,6 +93,9 @@ static void mbed_hmac_copy_state(struct crypto_mac_ctx *dst_ctx,
 
 	if (mbedtls_md_clone(&dst->md_ctx, &src->md_ctx))
 		panic();
+
+	if(dst->md_ctx.hmac_ctx != NULL && src->md_ctx.hmac_ctx != NULL)
+		memcpy(dst->md_ctx.hmac_ctx, src->md_ctx.hmac_ctx, 2 * src->md_ctx.md_info->block_size);
 }
 
 static const struct crypto_mac_ops mbed_hmac_ops = {

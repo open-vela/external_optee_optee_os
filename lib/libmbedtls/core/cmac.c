@@ -17,6 +17,8 @@
 #include <utee_defines.h>
 #include <util.h>
 
+#include "mbed_helpers.h"
+
 struct mbed_cmac_ctx {
 	struct crypto_mac_ctx mac_ctx;
 	mbedtls_cipher_context_t cipher_ctx;
