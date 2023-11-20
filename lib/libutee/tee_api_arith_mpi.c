@@ -42,11 +42,6 @@ static void __noreturn mpi_panic(const char *func, int line, int rc)
 
 void _TEE_MathAPI_Init(void)
 {
-	static uint8_t data[MPI_MEMPOOL_SIZE] __aligned(MEMPOOL_ALIGN);
-
-	mbedtls_mpi_mempool = mempool_alloc_pool(data, sizeof(data), NULL);
-	if (!mbedtls_mpi_mempool)
-		API_PANIC("Failed to initialize memory pool");
 }
 
 struct bigint_hdr {
@@ -98,7 +93,7 @@ static void get_mpi(mbedtls_mpi *mpi, const TEE_BigInt *bigInt)
 	COMPILE_TIME_ASSERT(sizeof(struct bigint_hdr) ==
 			    sizeof(uint32_t) * BIGINT_HDR_SIZE_IN_U32);
 
-	mbedtls_mpi_init_mempool(mpi);
+	mbedtls_mpi_init(mpi);
 
 	if (bigInt) {
 		const struct bigint_hdr *hdr = (struct bigint_hdr *)bigInt;
@@ -519,7 +514,7 @@ void TEE_BigIntMul(TEE_BigInt *dest, const TEE_BigInt *op1,
 	TEE_BigInt zero[TEE_BigIntSizeInU32(1)] = { 0 };
 	TEE_BigInt *tmp = NULL;
 
-	tmp = mempool_alloc(mbedtls_mpi_mempool, sizeof(uint32_t) * s);
+	tmp = malloc(sizeof(uint32_t) * s);
 	if (!tmp)
 		TEE_Panic(TEE_ERROR_OUT_OF_MEMORY);
 
@@ -530,7 +525,7 @@ void TEE_BigIntMul(TEE_BigInt *dest, const TEE_BigInt *op1,
 
 	TEE_BigIntAdd(dest, tmp, zero);
 
-	mempool_free(mbedtls_mpi_mempool, tmp);
+	free(tmp);
 }
 
 void TEE_BigIntSquare(TEE_BigInt *dest, const TEE_BigInt *op)
@@ -896,7 +891,7 @@ int32_t TEE_BigIntIsProbablePrime(const TEE_BigInt *op,
 
 	get_mpi(&mpi_op, op);
 
-	rc = mbedtls_mpi_is_prime(&mpi_op, rng_read, NULL);
+	rc = mbedtls_mpi_is_prime_ext(&mpi_op, 40, rng_read, NULL);
 
 	mbedtls_mpi_free(&mpi_op);
 
