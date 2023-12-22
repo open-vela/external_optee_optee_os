@@ -214,6 +214,9 @@ TEE_Result syscall_storage_obj_open(unsigned long storage_id, void *object_id,
 	o->info.handleFlags = TEE_HANDLE_FLAG_PERSISTENT |
 			      TEE_HANDLE_FLAG_INITIALIZED | flags;
 	o->pobj = po;
+#ifdef CONFIG_OPTEE_RPMB_COMPAT_MITEE_FS
+	o->pobj->storage_id = storage_id;
+#endif
 	tee_obj_add(utc, o);
 
 	res = tee_svc_storage_read_head(o);
@@ -409,6 +412,9 @@ TEE_Result syscall_storage_obj_create(unsigned long storage_id, void *object_id,
 		o->info.handleFlags = TEE_HANDLE_FLAG_PERSISTENT |
 				      TEE_HANDLE_FLAG_INITIALIZED | flags;
 		o->pobj = po;
+#ifdef CONFIG_OPTEE_RPMB_COMPAT_MITEE_FS
+		o->pobj->storage_id = storage_id;
+#endif
 
 		res = tee_svc_storage_init_file(o,
 						flags & TEE_DATA_FLAG_OVERWRITE,

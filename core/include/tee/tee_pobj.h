@@ -18,6 +18,9 @@ struct tee_pobj {
 	void *obj_id;
 	uint32_t obj_id_len;
 	uint32_t flags;
+#ifdef CONFIG_OPTEE_RPMB_COMPAT_MITEE_FS
+	uint32_t storage_id;
+#endif
 	bool temporary;	/* can be changed while creating == true */
 	bool creating;	/* can only be changed with mutex held */
 	/* Filesystem handling this object */
