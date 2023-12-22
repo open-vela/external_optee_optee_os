@@ -1929,6 +1929,9 @@ static TEE_Result create_filename(void *buf, size_t blen, struct tee_pobj *po,
 	uint8_t *file = buf;
 	uint32_t pos = 0;
 	uint32_t hslen = 1 /* Leading slash */
+#ifdef CONFIG_OPTEE_RPMB_COMPAT_MITEE_FS
+			+ TEE_B2HS_HSBUF_SIZE(sizeof(po->storage_id)) + 1
+#endif
 			+ TEE_B2HS_HSBUF_SIZE(sizeof(TEE_UUID) + po->obj_id_len)
 			+ 1; /* Intermediate slash */
 
@@ -1938,6 +1941,12 @@ static TEE_Result create_filename(void *buf, size_t blen, struct tee_pobj *po,
 
 	if (blen < hslen)
 		return TEE_ERROR_SHORT_BUFFER;
+
+#ifdef CONFIG_OPTEE_RPMB_COMPAT_MITEE_FS
+	file[pos++] = '/';
+	pos += tee_b2hs((uint8_t *)&po->storage_id, &file[pos],
+			sizeof(po->storage_id), hslen);
+#endif
 
 	file[pos++] = '/';
 	pos += tee_b2hs((uint8_t *)&po->uuid, &file[pos],
