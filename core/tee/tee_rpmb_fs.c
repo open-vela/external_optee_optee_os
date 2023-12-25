@@ -1209,6 +1209,8 @@ static TEE_Result tee_rpmb_read(uint16_t dev_id, uint32_t addr, uint8_t *data,
 	uint16_t blk_idx;
 	uint16_t blkcnt;
 	uint8_t byte_offset;
+	uint16_t blkcnt_read;
+	uint16_t blk_single = 1;
 
 	if (!data || !len)
 		return TEE_ERROR_BAD_PARAMETERS;
@@ -1226,51 +1228,58 @@ static TEE_Result tee_rpmb_read(uint16_t dev_id, uint32_t addr, uint8_t *data,
 	if (res != TEE_SUCCESS)
 		goto func_exit;
 
-	req_size = sizeof(struct rpmb_req) + RPMB_DATA_FRAME_SIZE;
-	resp_size = RPMB_DATA_FRAME_SIZE * blkcnt;
-	res = tee_rpmb_alloc(req_size, resp_size, &mem,
-			     (void *)&req, (void *)&resp);
-	if (res != TEE_SUCCESS)
-		goto func_exit;
-
-	msg_type = RPMB_MSG_TYPE_REQ_AUTH_DATA_READ;
-	res = crypto_rng_read(nonce, RPMB_NONCE_SIZE);
-	if (res != TEE_SUCCESS)
-		goto func_exit;
-
-	memset(&rawdata, 0x00, sizeof(struct rpmb_raw_data));
-	rawdata.msg_type = msg_type;
-	rawdata.nonce = nonce;
-	rawdata.blk_idx = &blk_idx;
-	res = tee_rpmb_req_pack(req, &rawdata, 1, dev_id, NULL, NULL);
-	if (res != TEE_SUCCESS)
-		goto func_exit;
-
-	req->block_count = blkcnt;
-
 	DMSG("Read %u block%s at index %u", blkcnt, ((blkcnt > 1) ? "s" : ""),
 	     blk_idx);
 
-	res = tee_rpmb_invoke(&mem);
+	req_size = sizeof(struct rpmb_req) + RPMB_DATA_FRAME_SIZE;
+	resp_size = RPMB_DATA_FRAME_SIZE;
+	res = tee_rpmb_alloc(req_size, resp_size, &mem,
+				(void *)&req, (void *)&resp);
 	if (res != TEE_SUCCESS)
 		goto func_exit;
 
-	msg_type = RPMB_MSG_TYPE_RESP_AUTH_DATA_READ;
+	for (blkcnt_read = 0; blkcnt_read < blkcnt; blkcnt_read++, blk_idx++) {
+		msg_type = RPMB_MSG_TYPE_REQ_AUTH_DATA_READ;
+		res = crypto_rng_read(nonce, RPMB_NONCE_SIZE);
+		if (res != TEE_SUCCESS)
+			goto func_exit;
 
-	memset(&rawdata, 0x00, sizeof(struct rpmb_raw_data));
-	rawdata.msg_type = msg_type;
-	rawdata.block_count = &blkcnt;
-	rawdata.blk_idx = &blk_idx;
-	rawdata.nonce = nonce;
-	rawdata.key_mac = hmac;
-	rawdata.data = data;
+		memset(&rawdata, 0x00, sizeof(struct rpmb_raw_data));
+		rawdata.msg_type = msg_type;
+		rawdata.nonce = nonce;
+		rawdata.blk_idx = &blk_idx;
+		res = tee_rpmb_req_pack(req, &rawdata, 1, dev_id, NULL, NULL);
+		if (res != TEE_SUCCESS)
+			goto func_exit;
 
-	rawdata.len = len;
-	rawdata.byte_offset = byte_offset;
+		req->block_count = 1;
 
-	res = tee_rpmb_resp_unpack_verify(resp, &rawdata, blkcnt, fek, uuid);
-	if (res != TEE_SUCCESS)
-		goto func_exit;
+		res = tee_rpmb_invoke(&mem);
+		if (res != TEE_SUCCESS)
+			goto func_exit;
+
+		msg_type = RPMB_MSG_TYPE_RESP_AUTH_DATA_READ;
+
+		memset(&rawdata, 0x00, sizeof(struct rpmb_raw_data));
+		rawdata.msg_type = msg_type;
+		rawdata.block_count = &blk_single;
+		rawdata.blk_idx = &blk_idx;
+		rawdata.nonce = nonce;
+		rawdata.key_mac = hmac;
+		rawdata.data = data;
+
+		rawdata.byte_offset = blkcnt_read ? 0 : byte_offset;
+		rawdata.len = blkcnt == 1 ? len :
+			blkcnt_read == blkcnt - 1 ?
+			len + byte_offset - (blkcnt - 1) * RPMB_DATA_SIZE :
+			RPMB_DATA_SIZE - rawdata.byte_offset;
+
+		res = tee_rpmb_resp_unpack_verify(resp, &rawdata, 1, fek, uuid);
+		if (res != TEE_SUCCESS)
+			goto func_exit;
+
+		data += rawdata.len;
+	}
 
 	res = TEE_SUCCESS;
 
