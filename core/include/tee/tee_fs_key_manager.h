@@ -9,7 +9,7 @@
 #include <tee_api_types.h>
 #include <utee_defines.h>
 
-#define TEE_FS_KM_CHIP_ID_LENGTH    U(32)
+#define TEE_FS_KM_CHIP_ID_LENGTH    U(CONFIG_OPTEE_FS_KM_CHIP_ID_LENGTH)
 #define TEE_FS_KM_HMAC_ALG          TEE_ALG_HMAC_SHA256
 #define TEE_FS_KM_ENC_FEK_ALG       TEE_ALG_AES_ECB_NOPAD
 #define TEE_FS_KM_SSK_SIZE          TEE_SHA256_HASH_SIZE
