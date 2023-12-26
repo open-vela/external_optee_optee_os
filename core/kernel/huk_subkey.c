@@ -38,7 +38,7 @@ static TEE_Result huk_compat(void *ctx, enum huk_subkey_usage usage)
 {
 	TEE_Result res = TEE_SUCCESS;
 	uint8_t chip_id[TEE_FS_KM_CHIP_ID_LENGTH] = { 0 };
-	static uint8_t ssk_str[] = "ONLY_FOR_tee_fs_ssk";
+	static uint8_t ssk_str[] = CONFIG_OPTEE_FS_SSK_STRING;
 
 	switch (usage) {
 	case HUK_SUBKEY_RPMB:
