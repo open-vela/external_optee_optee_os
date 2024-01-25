@@ -129,6 +129,7 @@ static struct tee_ta_ctx *ts_to_ta_ctx(struct ts_ctx *ctx)
 		return &(to_stmm_ctx(ctx)->ta_ctx);
 
 	panic("bad context");
+	return NULL;
 }
 
 static bool tee_ta_try_set_busy(struct tee_ta_ctx *ctx)
