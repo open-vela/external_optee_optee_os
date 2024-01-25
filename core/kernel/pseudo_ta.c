@@ -278,6 +278,7 @@ static TEE_Result verify_pseudo_tas_conformance(void)
 err:
 	DMSG("pseudo TA error at %p", (void *)pta);
 	panic("PTA");
+	return TEE_ERROR_GENERIC;
 }
 
 service_init(verify_pseudo_tas_conformance);
