@@ -175,3 +175,31 @@ TEE_Result crypto_hmac_sha512_alloc_ctx(struct crypto_mac_ctx **ctx)
 	return mbed_hmac_alloc_ctx(ctx, MBEDTLS_MD_SHA512);
 }
 #endif
+
+#if defined(CFG_CRYPTO_SHA3_224)
+TEE_Result crypto_hmac_sha3_224_alloc_ctx(struct crypto_mac_ctx **ctx)
+{
+	return mbed_hmac_alloc_ctx(ctx, MBEDTLS_MD_SHA3_224);
+}
+#endif
+
+#if defined(CFG_CRYPTO_SHA3_256)
+TEE_Result crypto_hmac_sha3_256_alloc_ctx(struct crypto_mac_ctx **ctx)
+{
+	return mbed_hmac_alloc_ctx(ctx, MBEDTLS_MD_SHA3_256);
+}
+#endif
+
+#if defined(CFG_CRYPTO_SHA3_384)
+TEE_Result crypto_hmac_sha3_384_alloc_ctx(struct crypto_mac_ctx **ctx)
+{
+	return mbed_hmac_alloc_ctx(ctx, MBEDTLS_MD_SHA3_384);
+}
+#endif
+
+#if defined(CFG_CRYPTO_SHA3_512)
+TEE_Result crypto_hmac_sha3_512_alloc_ctx(struct crypto_mac_ctx **ctx)
+{
+	return mbed_hmac_alloc_ctx(ctx, MBEDTLS_MD_SHA3_512);
+}
+#endif
