@@ -177,6 +177,34 @@ TEE_Result crypto_sha512_alloc_ctx(struct crypto_hash_ctx **ctx)
 }
 #endif
 
+#if defined(CFG_CRYPTO_SHA3_224)
+TEE_Result crypto_sha3_224_alloc_ctx(struct crypto_hash_ctx **ctx)
+{
+	return mbed_hash_alloc_ctx(ctx, MBEDTLS_MD_SHA3_224);
+}
+#endif
+
+#if defined(CFG_CRYPTO_SHA3_256)
+TEE_Result crypto_sha3_256_alloc_ctx(struct crypto_hash_ctx **ctx)
+{
+	return mbed_hash_alloc_ctx(ctx, MBEDTLS_MD_SHA3_256);
+}
+#endif
+
+#if defined(CFG_CRYPTO_SHA3_384)
+TEE_Result crypto_sha3_384_alloc_ctx(struct crypto_hash_ctx **ctx)
+{
+	return mbed_hash_alloc_ctx(ctx, MBEDTLS_MD_SHA3_384);
+}
+#endif
+
+#if defined(CFG_CRYPTO_SHA3_512)
+TEE_Result crypto_sha3_512_alloc_ctx(struct crypto_hash_ctx **ctx)
+{
+	return mbed_hash_alloc_ctx(ctx, MBEDTLS_MD_SHA3_512);
+}
+#endif
+
 #if defined(CFG_CRYPTO_SHA256)
 TEE_Result hash_sha256_check(const uint8_t *hash, const uint8_t *data,
 			     size_t data_size)
