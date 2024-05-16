@@ -15,7 +15,7 @@ SLIST_HEAD(wait_queue, wait_queue_elem);
 
 struct condvar;
 struct wait_queue_elem {
-	short handle;
+	int handle;
 	bool done;
 	bool wait_read;
 	struct condvar *cv;
