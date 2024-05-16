@@ -98,12 +98,12 @@ void thread_clr_boot_thread(void);
 /*
  * Returns current thread id.
  */
-short int thread_get_id(void);
+int thread_get_id(void);
 
 /*
  * Returns current thread id, return -1 on failure.
  */
-short int thread_get_id_may_fail(void);
+int thread_get_id_may_fail(void);
 
 /* Returns Thread Specific Data (TSD) pointer. */
 struct thread_specific_data *thread_get_tsd(void);
