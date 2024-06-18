@@ -108,6 +108,7 @@
 #define CONCAT(x, y) _CONCAT(x, y)
 #define _CONCAT(x, y) x##y
 
+#undef container_of
 #define container_of(ptr, type, member) \
 	(__extension__({ \
 		const typeof(((type *)0)->member) *__ptr = (ptr); \
