@@ -80,13 +80,6 @@ static TEE_Result copy_mpi_to_bigint(mbedtls_mpi *mpi, TEE_BigInt *bigInt)
 static void get_mpi(mbedtls_mpi *mpi, const TEE_BigInt *bigInt)
 {
 	/*
-	 * The way the GP spec is defining the bignums it's
-	 * difficult/tricky to do it using 64-bit arithmetics given that
-	 * we'd need 64-bit alignment of the data as well.
-	 */
-	COMPILE_TIME_ASSERT(sizeof(mbedtls_mpi_uint) == sizeof(uint32_t));
-
-	/*
 	 * The struct bigint_hdr is the overhead added to the bigint and
 	 * is required to take exactly 2 uint32_t.
 	 */
