@@ -341,16 +341,27 @@ static TEE_Result ecc_shared_secret(struct ecc_keypair *private_key,
 	memset(&gid, 0, sizeof(gid));
 	mbedtls_ecdh_init(&ecdh);
 	gid = curve_to_group_id(private_key->curve);
+
+#if defined(MBEDTLS_ECDH_LEGACY_CONTEXT)
+	lmd_res = mbedtls_ecp_group_load(&ecdh.grp, gid);
+
+	ecdh.d = *(mbedtls_mpi *)private_key->d;
+	ecdh.Qp.X = *(mbedtls_mpi *)public_key->x;
+	ecdh.Qp.Y = *(mbedtls_mpi *)public_key->y;
+	mbedtls_mpi_read_binary(&ecdh.Qp.Z, one, sizeof(one));
+#else
 	lmd_res = mbedtls_ecp_group_load(&ecdh.ctx.mbed_ecdh.grp, gid);
-	if (lmd_res != 0) {
-		res = TEE_ERROR_NOT_SUPPORTED;
-		goto out;
-	}
 
 	ecdh.ctx.mbed_ecdh.d = *(mbedtls_mpi *)private_key->d;
 	ecdh.ctx.mbed_ecdh.Qp.X = *(mbedtls_mpi *)public_key->x;
 	ecdh.ctx.mbed_ecdh.Qp.Y = *(mbedtls_mpi *)public_key->y;
 	mbedtls_mpi_read_binary(&ecdh.ctx.mbed_ecdh.Qp.Z, one, sizeof(one));
+#endif /* MBEDTLS_ECDH_LEGACY_CONTEXT */
+
+	if (lmd_res != 0) {
+		res = TEE_ERROR_NOT_SUPPORTED;
+		goto out;
+	}
 
 	lmd_res = mbedtls_ecdh_calc_secret(&ecdh, &out_len, secret,
 					   *secret_len, mbd_rand, NULL);
@@ -361,9 +372,15 @@ static TEE_Result ecc_shared_secret(struct ecc_keypair *private_key,
 	*secret_len = out_len;
 out:
 	/* Reset mpi to skip freeing here, those mpis will be freed with key */
+#if defined(MBEDTLS_ECDH_LEGACY_CONTEXT)
+	mbedtls_mpi_init(&ecdh.d);
+	mbedtls_mpi_init(&ecdh.Qp.X);
+	mbedtls_mpi_init(&ecdh.Qp.Y);
+#else
 	mbedtls_mpi_init(&ecdh.ctx.mbed_ecdh.d);
 	mbedtls_mpi_init(&ecdh.ctx.mbed_ecdh.Qp.X);
 	mbedtls_mpi_init(&ecdh.ctx.mbed_ecdh.Qp.Y);
+#endif /* MBEDTLS_ECDH_LEGACY_CONTEXT */
 	mbedtls_ecdh_free(&ecdh);
 	return res;
 }
