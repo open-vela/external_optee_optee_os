@@ -6,6 +6,7 @@
 #define __RNG_SUPPORT_H__
 
 #include <stdint.h>
+#include <tee_api_types.h>
 
 TEE_Result hw_get_random_bytes(void *buf, size_t blen);
 
