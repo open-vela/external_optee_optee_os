@@ -45,7 +45,7 @@ struct internal_aes_gcm_state {
 	unsigned int aad_bytes;
 	unsigned int payload_bytes;
 	unsigned int buf_pos;
-};
+} __attribute__((aligned(sizeof(uint64_t))));
 
 struct internal_aes_gcm_ctx {
 	struct internal_aes_gcm_state state;
