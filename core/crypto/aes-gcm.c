@@ -28,7 +28,7 @@ static void ghash_update_pad_zero(struct internal_aes_gcm_state *state,
 				  const uint8_t *data, size_t len)
 {
 	size_t n = len / TEE_AES_BLOCK_SIZE;
-	uint64_t block[2] __attribute__((aligned(16)));
+	uint64_t block[2];
 
 	if (n) {
 		if (internal_aes_gcm_ptr_is_block_aligned(data)) {
@@ -57,7 +57,7 @@ static void ghash_update_pad_zero(struct internal_aes_gcm_state *state,
 static void ghash_update_lengths(struct internal_aes_gcm_state *state,
 				 uint32_t l1, uint32_t l2)
 {
-	uint64_t len_fields[2] __attribute__((aligned(16))) = {
+	uint64_t len_fields[2] = {
 		TEE_U64_TO_BIG_ENDIAN(l1 * 8),
 		TEE_U64_TO_BIG_ENDIAN(l2 * 8)
 	};
