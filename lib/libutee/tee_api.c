@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string_ext.h>
+#include <malloc.h>
 #include <tee_api.h>
 #include <tee_internal_api_extensions.h>
 #include <types_ext.h>
