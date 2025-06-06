@@ -15,8 +15,10 @@ struct initcall {
 #if TRACE_LEVEL >= TRACE_DEBUG
 	int level;
 	const char *func_name;
-#endif
+} __attribute__ ((aligned(16)));
+#else
 };
+#endif
 
 #if TRACE_LEVEL >= TRACE_DEBUG
 #define __define_initcall(type, lvl, fn) \
