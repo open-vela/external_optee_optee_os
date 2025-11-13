@@ -95,7 +95,9 @@
 /* x has to be of an unsigned type */
 #define IS_POWER_OF_TWO(x) (((x) != 0) && (((x) & (~(x) + 1)) == (x)))
 
+#ifndef IS_ALIGNED
 #define IS_ALIGNED(x, a)		(((x) & ((a) - 1)) == 0)
+#endif
 #define IS_ALIGNED_WITH_TYPE(x, type) \
         (__extension__({ \
                 type __is_aligned_y; \
