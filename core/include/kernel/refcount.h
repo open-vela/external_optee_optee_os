@@ -7,7 +7,7 @@
 #define __KERNEL_REFCOUNT_H
 
 #include <atomic.h>
-
+#include <stdbool.h>
 /*
  * Reference counter
  *
